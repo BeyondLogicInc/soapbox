@@ -34,10 +34,11 @@ class Signup extends CI_Controller{
         $data['school'] = $this->security->xss_clean($this->input->post('school'));
         $data['categories'] = $this->security->xss_clean($this->input->post('categories'));
         $data['uid'] = $this->session->userdata('userid');
-        
-        $config['upload_path'] = './userdata/' . $this->session->userdata('userid') . '/';
+        $upload_path = './userdata/' . $this->session->userdata('userid') . '/';
+        $config['upload_path'] = $upload_path;
         $config['allowed_types'] = 'jpg|jpeg|png|JPG|JPEG|PNG';
         $config['overwrite'] = FALSE;
+        mkdir($upload_path,0777,TRUE);
         $this->load->library('upload', $config);
         if(!$this->upload->do_upload('file')){
             if($data['gender']=="male"){
@@ -53,6 +54,7 @@ class Signup extends CI_Controller{
             $upload_data = $this->upload->data();
             $data['imagepath'] = $upload_data['file_name'];
         }
+        @chmod($upload_path . $data['imagepath'], 0777);
         
         $this->load->model('Signup_model');
         $this->Signup_model->populate($data);
