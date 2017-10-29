@@ -16,6 +16,21 @@ class Login_model extends CI_Model {
         }
         return false;
     }
+    public function validateSocialLogin($email){
+        $result = $this->db->query("SELECT username, uid FROM useraccounts, extendedinfo WHERE email='$email' AND useraccounts.srno = extendedinfo.uid");
+        if($result->num_rows() > 0){
+            $row = $result->row_array();
+            $query = $this->db->query("SELECT fname, lname, avatarpath from extendedinfo where uid = " . $row['uid']);
+            $row_ = $query->row_array();
+            $data['userid'] = $row['uid'];
+            $data['username'] = $row['username'];
+            $data['fname'] = $row_['fname'];
+            $data['lname'] = $row_['lname'];
+            $data['avatarpath'] = $row_['avatarpath'];
+            return $data;
+        }
+        return false;
+    }
     public function signup($nusername, $npassword){
         $this->db->query("INSERT INTO useraccounts(username, password) values('$nusername','$npassword')");
         $result = $this->db->query("SELECT srno FROM useraccounts WHERE username='$nusername'");
