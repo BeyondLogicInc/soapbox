@@ -1,7 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Ajax_Controller extends CI_Controller{
-    
+
     public function checkUsername(){
         $username = $this->security->xss_clean($this->input->post('uname'));
         $this->load->model('Ajax_model');
@@ -17,7 +17,7 @@ class Ajax_Controller extends CI_Controller{
             echo json_encode($data);
         }
     }
-    
+
     public function email_exists(){
         $email = $this->security->xss_clean($this->input->post('email'));
         $this->load->model('Ajax_model');
@@ -33,14 +33,11 @@ class Ajax_Controller extends CI_Controller{
             echo json_encode($data);
         }
     }
-    
+
     public function upload_image($fileName,$nocache,$total){
-        //$filename = "upload/".$_GET['fileName'];        
         $filename = "userdata/" . $this->session->userdata('userid') . '/' .$fileName;
-        $xmlstr = $GLOBALS['HTTP_RAW_POST_DATA'];
-        if(empty($xmlstr)){
-             $xmlstr = file_get_contents('php://input');
-        }
+        $xmlstr = file_get_contents('php://input');
+        
         $is_ok = false;
         while(!$is_ok){
             $file = fopen($filename,"ab");
@@ -61,11 +58,11 @@ class Ajax_Controller extends CI_Controller{
             echo json_encode($data);
         }
     }
-    
+
     public function upload_image_ios($fileName,$total){
         $filename = "userdata/" . $this->session->userdata('userid') . '/' .$fileName;
         $xmlstr = file_get_contents('php://input');
-        
+
         $is_ok = false;
         while(!$is_ok){
             $file = fopen($filename,"ab");
@@ -99,7 +96,7 @@ class Ajax_Controller extends CI_Controller{
         $data = array('image'=>$newname);
         echo json_encode($data);
     }
-    
+
     public function post_thread(){
         $data['title'] = $this->security->xss_clean($this->input->post('title'));
         $data['desc'] = $this->input->post('desc');
@@ -114,12 +111,12 @@ class Ajax_Controller extends CI_Controller{
         }
         else{
             $filename = explode('/', $data['filename']);
-            $data['filename'] = $filename[2];        
+            $data['filename'] = $filename[2];
         }
-        
+
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->post_thread($data);
-        
+
         header('Access-Control-Allow-Origin: *');
         header("Content-Type: application/json");
         if($result){
@@ -129,9 +126,9 @@ class Ajax_Controller extends CI_Controller{
         else{
             $data = array('response'=>'false');
             echo json_encode($data);
-        }        
+        }
     }
-    
+
     public function remove_image(){
         $filename = $this->security->xss_clean($this->input->post('filename'));
         if (strpos($filename, 'userdata/' . $this->session->userdata('userid')) !== false) {
@@ -144,9 +141,9 @@ class Ajax_Controller extends CI_Controller{
     }
     public function quick_search(){
         $data = $this->security->xss_clean($this->input->post('key'));
-               
+
         $this->load->model('Ajax_model');
-        
+
         $result = $this->Ajax_model->quick_search($data);
         if(!$result){
             $result = '<p class="margin0" style="padding: 0 10px 10px;">Couldn\'t find anything :(</p>';
@@ -155,23 +152,23 @@ class Ajax_Controller extends CI_Controller{
         header('Access-Control-Allow-Origin: *');
         header("Content-Type: application/json");
         echo json_encode($data);
-    }   
- 
+    }
+
     public function thread_options($param){
         $data['tid'] = $this->security->xss_clean($this->input->post('tid'));
         $data['uid'] = $this->session->userdata('userid');
         $data['opt'] = $param;
         $this->load->model('Ajax_model');
-        $result = $this->Ajax_model->thread_options($data);               
+        $result = $this->Ajax_model->thread_options($data);
         if(!$result){
             $data = array("response"=>"false");
-        }        
+        }
         $data = $result;
         header('Access-Control-Allow-Origin: *');
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function update_categories(){
         $data['cid'] = $this->security->xss_clean($this->input->post('array'));
         $data['cid'] = rtrim($data['cid'],",");
@@ -188,14 +185,14 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function update_category(){
         $data['cid'] = $this->security->xss_clean($this->input->post('cid'));
         $data['action'] = $this->security->xss_clean($this->input->post('action'));
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->update_category($data);
-        
+
         if($result){
             $data = array("response"=>$result);
         }
@@ -213,10 +210,10 @@ class Ajax_Controller extends CI_Controller{
         $data['opt'] = $this->security->xss_clean($this->input->post('opt'));
         $data['optval'] = $this->security->xss_clean($this->input->post('optval'));
         $data['optcat'] = $this->security->xss_clean($this->input->post('optcat'));
-        
+
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->load_more_thread($data);
-        
+
         if(!$result){
             $data = array('response'=>'false','content'=>'<div class="pure-u-1 no-content-note">
                     <h3 class="light txt-center" style="padding: 20px;">That\'s all we could find :(</h3>
@@ -230,12 +227,12 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function search_all(){
         $data['param'] = $this->security->xss_clean($this->input->post('key'));
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->search_all($data);
-        
+
         if(!$result){
             $result = '<p class="margin0" style="padding: 0 10px 10px;">Couldn\'t find anything :(</p>';
         }
@@ -244,12 +241,12 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-      
+
     public function search_people(){
         $data['param'] = $this->security->xss_clean($this->input->post('key'));
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->search_people($data);
-        
+
         if(!$result){
             $result = '<p class="margin0" style="padding: 0 10px 10px;">Couldn\'t find anything :(</p>';
         }
@@ -258,12 +255,12 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function search_tags() {
         $data['param'] = $this->security->xss_clean($this->input->post('key'));
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->search_tags($data);
-        
+
         if(!$result){
             $result = '<p class="margin0" style="padding: 0 10px 10px;">Couldn\'t find anything :(</p>';
         }
@@ -272,13 +269,13 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function search_by_category(){
         $data['param'] = $this->security->xss_clean($this->input->post('key'));
         $data['cid'] = $this->security->xss_clean($this->input->post('cid'));
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->search_by_category($data);
-        
+
         if(!$result){
             $result = '<p class="margin0" style="padding: 0 10px 10px;">Couldn\'t find anything :(</p>';
         }
@@ -287,13 +284,13 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function fetch_list_thread(){
         $data['tid'] = $this->security->xss_clean($this->input->post('tid'));
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->fetch_list_thread($data);
-        
+
         if(!$result){
             $result = '<p class="margin0" style="padding: 0 10px 10px;">Couldn\'t find anything :(</p>';
         }
@@ -302,14 +299,14 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function fetch_list_thread_next(){
         $data['tid'] = $this->security->xss_clean($this->input->post('tid'));
         $data['nextsrno'] = $this->security->xss_clean($this->input->post('nextsrno'));
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->fetch_list_thread_next($data);
-        
+
         if(!$result){
             $result = '<p class="margin0" style="padding: 0 10px 10px;">Couldn\'t find anything :(</p>';
         }
@@ -318,13 +315,13 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function upvote_thread(){
         $data['tid'] = $this->security->xss_clean($this->input->post('tid'));
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->upvote_thread($data);
-        
+
         if($result){
             $data = array("response"=>"true", "count"=>$result);
         }
@@ -334,15 +331,15 @@ class Ajax_Controller extends CI_Controller{
         header('Access-Control-Allow-Origin: *');
         header("Content-Type: application/json");
         echo json_encode($data);
-        
+
     }
-    
+
     public function rm_upvote_thread(){
         $data['tid'] = $this->security->xss_clean($this->input->post('tid'));
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->rm_upvote_thread($data);
-        
+
         if($result>=0){
             $data = array("response"=>"true", "count"=>$result);
         }
@@ -352,9 +349,9 @@ class Ajax_Controller extends CI_Controller{
         header('Access-Control-Allow-Origin: *');
         header("Content-Type: application/json");
         echo json_encode($data);
-        
+
     }
-    
+
     public function reply_thread(){
         $data['tid'] = $this->security->xss_clean($this->input->post('tid'));
         $data['desc'] = $this->input->post('desc');
@@ -362,10 +359,10 @@ class Ajax_Controller extends CI_Controller{
         $data['username'] = $this->session->userdata('username');
         $data['name'] = $this->session->userdata('fname') . ' ' . $this->session->userdata('lname');
         $data['avatarpath'] = $this->session->userdata('avatarpath');
-        
+
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->reply_thread($data);
-        
+
         if($result>=0){
             $data = array("response"=>"true", "content"=>$result);
         }
@@ -376,16 +373,16 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function add_comment(){
         $data['comment'] = $this->security->xss_clean($this->input->post('comment'));
         $data['rid'] = $this->security->xss_clean($this->input->post('rid'));
         $data['uid'] = $this->session->userdata('userid');
-        
+
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->add_comment($data);
-        
-        if($result){            
+
+        if($result){
             $data = array("response"=>"true", "content"=>$result);
         }
         else{
@@ -395,13 +392,13 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function upvote_reply(){
         $data['rid'] = $this->security->xss_clean($this->input->post('rid'));
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->upvote_reply($data);
-        
+
         if($result){
             $data = array("response"=>"true", "count"=>$result);
         }
@@ -411,15 +408,15 @@ class Ajax_Controller extends CI_Controller{
         header('Access-Control-Allow-Origin: *');
         header("Content-Type: application/json");
         echo json_encode($data);
-        
+
     }
-    
+
     public function rm_upvote_reply(){
         $data['rid'] = $this->security->xss_clean($this->input->post('rid'));
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->rm_upvote_reply($data);
-        
+
         if($result>=0){
             $data = array("response"=>"true", "count"=>$result);
         }
@@ -438,7 +435,7 @@ class Ajax_Controller extends CI_Controller{
         $result = $this->Ajax_model->search_threads_mobile($data);
         $result1 = $this->Ajax_model->search_people_mobile($data);
         $result2 = $this->Ajax_model->search_tags_mobile($data);
-        
+
         if(!$result){
             $result = '<p class="margin0" style="padding: 0 10px 10px;">Couldn\'t find anything :(</p>';
         }
@@ -453,7 +450,7 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     function post_thread_mobile() {
         $data['title'] = $this->security->xss_clean($this->input->post('title'));
         $data['desc'] = $this->security->xss_clean($this->input->post('desc'));
@@ -468,12 +465,12 @@ class Ajax_Controller extends CI_Controller{
         }
         else{
             $filename = explode('/', $data['filename']);
-            $data['filename'] = $filename[2];        
+            $data['filename'] = $filename[2];
         }
-        
+
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->post_thread_mobile($data);
-        
+
         header('Access-Control-Allow-Origin: *');
         header("Content-Type: application/json");
         if($result){
@@ -483,15 +480,15 @@ class Ajax_Controller extends CI_Controller{
         else{
             $data = array('response'=>'false');
             echo json_encode($data);
-        }       
+        }
     }
-    
+
     public function remove_reply(){
         $data['rid'] = $this->security->xss_clean($this->input->post('rid'));
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->remove_reply($data);
-        
+
         if($result){
             $data = array("response"=>"true");
         }
@@ -502,13 +499,13 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function wait_for_notification(){
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->wait_for_notification($data);
         $cnt = $this->Ajax_model->get_notification_count($data);
-        
+
         if(!$result){
             $data = array("response"=>"false");
         }
@@ -519,13 +516,13 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function reset_notifications(){
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->reset_notifications($data);
     }
-    
+
     public function mark_read(){
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
@@ -535,7 +532,7 @@ class Ajax_Controller extends CI_Controller{
         $data = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->pull_notifications($data);
-        
+
         if(!$result){
             $data = array("response"=>"false");
         }
@@ -546,12 +543,12 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function people_upvoted(){
         $data['tid'] = $this->security->xss_clean($this->input->post('tid'));
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->people_upvoted($data);
-        
+
         if(!$result){
             $data = array("response"=>"false");
         }
@@ -562,12 +559,12 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function viewers(){
         $data['tid'] = $this->security->xss_clean($this->input->post('tid'));
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->viewers($data);
-        
+
         if(!$result){
             $data = array("response"=>"false");
         }
@@ -578,13 +575,13 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function remove_comment(){
         $data['rrid'] = $this->security->xss_clean($this->input->post('rrid'));
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->remove_comment($data);
-        
+
         if($result){
             $data = array("response"=>"true");
         }
@@ -601,7 +598,7 @@ class Ajax_Controller extends CI_Controller{
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->mark_correct($data);
-        
+
         if($result){
             $data = array("response"=>"true");
         }
@@ -611,7 +608,7 @@ class Ajax_Controller extends CI_Controller{
         header('Access-Control-Allow-Origin: *');
         header("Content-Type: application/json");
         echo json_encode($data);
-        
+
     }
 
     public function remove_correct(){
@@ -619,7 +616,7 @@ class Ajax_Controller extends CI_Controller{
         $data['uid'] = $this->session->userdata('userid');
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->remove_correct($data);
-        
+
         if($result){
             $data = array("response"=>"true");
         }
@@ -629,13 +626,13 @@ class Ajax_Controller extends CI_Controller{
         header('Access-Control-Allow-Origin: *');
         header("Content-Type: application/json");
         echo json_encode($data);
-        
+
     }
     public function validate_reset_request(){
         $data['username'] = $this->security->xss_clean($this->input->post('username'));
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->validate_reset_request($data);
-        
+
         if($result){
             $data = array("response"=>"true", "content"=>$result);
         }
@@ -651,7 +648,7 @@ class Ajax_Controller extends CI_Controller{
         $data['answer'] = $this->security->xss_clean($this->input->post('answer'));
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->verify_answer($data);
-        
+
         if($result){
             $data = array("response"=>"true", "content"=>$result);
         }
@@ -688,17 +685,17 @@ class Ajax_Controller extends CI_Controller{
             echo json_encode($data);
         }
     }
-    
+
     public function save_cover_image() {
         $data['filename'] = trim($this->input->post('filename'));
         $filename = explode('/', $data['filename']);
-        $data['filename'] = $filename[2]; 
+        $data['filename'] = $filename[2];
         $data['coordinates'] = $this->security->xss_clean($this->input->post('coordinates'));
         $data['uid'] = $this->session->userdata('userid');
-        
+
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->save_cover_image($data);
-        
+
         if($result){
             $data = array("response"=>"true");
         }
@@ -733,7 +730,7 @@ class Ajax_Controller extends CI_Controller{
             'charset' => 'iso-8859-1',
             'wordwrap' => TRUE
         );
-        
+
         $this->load->library('email', $config);
         $this->email->set_newline("\r\n");
         $this->email->from('dandekar.atharva@gmail.com'); // change it to yours
@@ -756,7 +753,7 @@ class Ajax_Controller extends CI_Controller{
         $data['title'] = $this->security->xss_clean($this->input->post('title'));
         $data['desc'] = $this->security->xss_clean($this->input->post('desc'));
         $data['coordinates'] = $this->security->xss_clean($this->input->post('coordinates'));
-        
+
         $this->load->model('Ajax_model');
         $this->Ajax_model->edit_thread($data);
         $result = $this->Ajax_model->pull_t_desc($data);
@@ -771,8 +768,8 @@ class Ajax_Controller extends CI_Controller{
         echo json_encode($data);
     }
     public function pull_t_desc(){
-        $data['tid'] = $this->security->xss_clean($this->input->post('tid'));        
-        
+        $data['tid'] = $this->security->xss_clean($this->input->post('tid'));
+
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->pull_t_desc($data);
         if($result){
@@ -786,8 +783,8 @@ class Ajax_Controller extends CI_Controller{
         echo json_encode($data);
     }
     public function edit_history(){
-        $data['tid'] = $this->security->xss_clean($this->input->post('tid'));        
-        
+        $data['tid'] = $this->security->xss_clean($this->input->post('tid'));
+
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->edit_history($data);
         if($result){
@@ -800,10 +797,10 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function autocomplete_tags(){
         $data['key'] = $this->security->xss_clean($this->input->post('key'));
-        
+
         $this->load->model('Ajax_model');
         $result = $this->Ajax_model->autocomplete_tags($data);
         $data = array("content"=>$result);
@@ -811,7 +808,7 @@ class Ajax_Controller extends CI_Controller{
         header("Content-Type: application/json");
         echo json_encode($data);
     }
-    
+
     public function get_real_views(){
         $data['tid'] = $this->security->xss_clean($this->input->post('tid'));
         $this->load->model('Ajax_model');
