@@ -11,13 +11,33 @@ class SocialLogin extends CI_Controller {
         $email = $this->security->xss_clean($this->input->get('email'));
         $id = $this->security->xss_clean($this->input->get('id'));
         $accessToken = $this->security->xss_clean($this->input->get('accessToken'));
+        $provider = $this->security->xss_clean($this->input->get('provider'));
+        $url = '';
+        $content = '';
+        $json;
 
-        $url = "https://graph.facebook.com/me?fields=email,name,gender,id&access_token=" . $accessToken;
-        $content = file_get_contents($url);
-        $json = json_decode($content);
-        $json->username = explode(" ", $json->name)[0] . '_' . getToken(8);
-        $json->fname = explode(" ", $json->name)[0];
-        $json->lname = explode(" ", $json->name)[1];
+        switch($provider) {
+            case 'facebook':    $url = "https://graph.facebook.com/me?fields=email,name,gender,id&access_token=" . $accessToken;
+                                $content = file_get_contents($url);
+                                $json = json_decode($content);
+                                $json->username = explode(" ", $json->name)[0] . '_' . getToken(8);
+                                $json->fname = explode(" ", $json->name)[0];
+                                $json->lname = explode(" ", $json->name)[1];
+                                $json->email = $json->email;
+                                $json->gender = $json->gender;
+                                break;
+            case 'google':      $url = "https://www.googleapis.com/plus/v1/people/me?fields=emails,name,id,gender&access_token=" . $accessToken;
+                                $content = file_get_contents($url);
+                                $json = json_decode($content);
+                                $json->username = $json->name->givenName . '_' . getToken(8);
+                                $json->fname = $json->name->givenName;
+                                $json->lname = $json->name->familyName;
+                                $json->email = $json->emails[0]->value;
+                                $json->gender = $json->gender;
+                                break;
+            case 'twitter':     $url = "";
+                                break;
+        }
 
         if ($json->email == $email) {
             $result = $this->Login_model->validateSocialLogin($email);
@@ -31,12 +51,14 @@ class SocialLogin extends CI_Controller {
                     $data['error'] = 'invalid';
                     $this->load->view('login_view', $data);
                 }
-            }
-            else {
+            } else {
                 $newdata = array("userid"=>$result['userid'], "username"=>$result['username'], "fname"=>$result['fname'], "lname"=>$result['lname'], "avatarpath"=>$result['avatarpath']);
                 $this->session->set_userdata($newdata);
                 redirect(base_url(),'location');
             }
+        } else {
+            $data['error'] = 'invalid';
+            $this->load->view('login_view', $data);
         }
     }
 }

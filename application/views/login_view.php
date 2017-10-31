@@ -92,15 +92,17 @@
                         <p class="bold">You already know how this works</p>
                         <p class="light txt-justify">Choose from the topics of your interest to create a feed of information tuned to your interests. Create a thread to share knowledge.</p>
                         <div class="pure-g">
-                            <div class="pure-u-md-1-3">
+                            <div class="pure-u-md-1-3 pure-u-1">
                                 <a href="http://localhost:3000/login/facebook">
                                     <button class="btn-general social-login-btn fb-login fg-white">FACEBOOK</button>
                                 </a>
                             </div>
-                            <div class="pure-u-md-1-3">
-                                <button class="btn-general social-login-btn google-login fg-white">GOOGLE</button>
+                            <div class="pure-u-md-1-3 pure-u-1">
+                                <a href="http://localhost:3000/login/google">
+                                    <button class="btn-general social-login-btn google-login fg-white">GOOGLE</button>
+                                </a>
                             </div>
-                            <div class="pure-u-md-1-3">
+                            <div class="pure-u-md-1-3 pure-u-1">
                                 <button class="btn-general social-login-btn twitter-login fg-white">TWITTER</button>
                             </div>
                         </div>
