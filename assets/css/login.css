@@ -3,7 +3,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/* 
+/*
     Created on : 10 Feb, 2015, 10:44:29 PM
     Author     : mihirk
 */
@@ -86,7 +86,7 @@ body.bg-blur{
     width: 100%;
     padding: 5px;
     margin: 5px 0 5px 0;
-    background: transparent;    
+    background: transparent;
     border: 1px solid;
     border-color: transparent transparent #ccc transparent;
     color:#000;
@@ -106,10 +106,43 @@ body.bg-blur{
     color: #999 !important;
     background: #ccc !important;
 }
-.login-signup{
+.login-signup, .social-login-btn {
     margin: 10px 0 5px 0;
     border-color: #a20025;
 }
+
+.social-login-btn {
+    letter-spacing: 1px;
+    font-size: 12px;
+    width: 95%;
+    margin-left: 5px !important;
+}
+.social-login-btn > a {
+    color: inherit !important;
+    display: block;
+}
+
+.social-login-btn.fb-login {
+    margin-left: 0px !important;
+    background: #3b5988 !important;
+    border-color: #3b5988;
+}
+
+.social-login-btn.google-login {
+    background: #d34836 !important;
+    border-color: #d34836;
+}
+
+.social-login-btn.twitter-login {
+    margin-left: 10px !important;
+    background: #429cd6 !important;
+    border-color: #429cd6;
+}
+
+.social-login-btn.fb-login:hover, .social-login-btn.google-login:hover, .social-login-btn.twitter-login:hover {
+    background: transparent !important;
+}
+
 .login-guest{
     margin: 4px 0 5px 0;
     border-color: #4390df;

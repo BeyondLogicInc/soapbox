@@ -91,11 +91,24 @@
                         <p class="light txt-justify" style="margin-top: 15px;">We made it really, really simple for people to ask any question and get answers from real people with first-hand experience.</p>
                         <p class="bold">You already know how this works</p>
                         <p class="light txt-justify">Choose from the topics of your interest to create a feed of information tuned to your interests. Create a thread to share knowledge.</p>
+                        <div class="pure-g">
+                            <div class="pure-u-md-1-3">
+                                <a href="http://localhost:3000/login/facebook">
+                                    <button class="btn-general social-login-btn fb-login fg-white">FACEBOOK</button>
+                                </a>
+                            </div>
+                            <div class="pure-u-md-1-3">
+                                <button class="btn-general social-login-btn google-login fg-white">GOOGLE</button>
+                            </div>
+                            <div class="pure-u-md-1-3">
+                                <button class="btn-general social-login-btn twitter-login fg-white">TWITTER</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </body>
     <script src="<?php echo asset_url(); ?>js/jquery-2.1.3.min.js"></script>
-    <script src="<?php echo asset_url(); ?>js/login.js"></script>    
+    <script src="<?php echo asset_url(); ?>js/login.js"></script>
 </html>

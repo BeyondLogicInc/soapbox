@@ -31,13 +31,57 @@ class Login_model extends CI_Model {
         }
         return false;
     }
+
+    public function createNewSocialLoginUser($json) {
+        $profile_picture_url = "https://graph.facebook.com/" . $json->id . "/picture?type=large";
+        $this->db->query("INSERT INTO useraccounts(username, password) values('$json->username','')");
+        $result = $this->db->query("SELECT srno FROM useraccounts WHERE username='$json->username'");
+        $row = $result->row_array();
+        $srno = $row['srno'];
+
+        mkdir(FCPATH . "./userdata/" . $srno, 0777, TRUE);
+        $filedata = file_get_contents($profile_picture_url);
+        $fileName = FCPATH . "userdata/" . $srno . '/fb_avatar.jpg';
+        $file = fopen($fileName, 'w+');
+        fputs($file, $filedata);
+        fclose($file);
+
+        if(!file_exists($fileName)){
+            if($json->gender == "male"){
+                copy(FCPATH . 'assets/images/avatar_male.png' , FCPATH . 'userdata/' . $srno . '/avatar_male.png');
+                $json->avatarpath = "avatar_male.png";
+            }
+            else if($json->gender == "female"){
+                copy(FCPATH . 'assets/images/avatar_female.png' , FCPATH . 'userdata/' . $srno . '/avatar_female.png');
+                $json->avatarpath = "avatar_female.png";
+            }
+        }
+        else{
+            $json->avatarpath = 'fb_avatar.jpg';
+        }
+
+        $this->db->query("INSERT into extendedinfo(fname, lname, email, gender, avatarpath, uid) VALUES (". $this->db->escape($json->fname) . "," . $this->db->escape ($json->lname) . "," . $this->db->escape($json->email) . "," . $this->db->escape($json->gender) . "," . $this->db->escape($avatarpath) . "," . (int)$srno . ")");
+        $get_categories = $this->db->query("SELECT * FROM category");
+        $categories = $get_categories->row_array();
+        foreach ($categories as $category){
+            $query = $this->db->query("INSERT INTO category_user VALUES(" . (int)$category . "," . (int)$srno .")");
+        }
+
+        $_query= $this->db->query("SELECT useraccounts.*, extendedinfo.* FROM useraccounts, extendedinfo WHERE useraccounts.username='" . $json->username . "' AND useraccounts.srno=extendedinfo.uid");
+        if($_query->num_rows()>0){
+            $result_= $_query->row_array();
+            return $result_;
+        }
+        return false;
+    }
+
     public function signup($nusername, $npassword){
         $this->db->query("INSERT INTO useraccounts(username, password) values('$nusername','$npassword')");
         $result = $this->db->query("SELECT srno FROM useraccounts WHERE username='$nusername'");
         $row = $result->row_array();
         return $row['srno'];
     }
-    
+
     public function reset_password($data){
         $query = $this->db->query("UPDATE useraccounts SET password='" . $data['npassword'] . "' WHERE username='" . $data['nusername'] ."'");
         $query_= $this->db->query("SELECT * FROM useraccounts WHERE username='" . $data['nusername'] . "' AND password='" . $data['npassword'] . "'");
@@ -46,7 +90,7 @@ class Login_model extends CI_Model {
         }
         return false;
     }
-    
+
     public function is_user_from_fb($data){
         $query = $this->db->query("SELECT useraccounts.*, extendedinfo.* FROM extendedinfo, useraccounts WHERE email='" . $data . "' AND useraccounts.srno=extendedinfo.uid");
         if($query->num_rows()>0){
@@ -55,7 +99,7 @@ class Login_model extends CI_Model {
         }
         return false;
     }
-    
+
     public function check_username($data){
         $query = $this->db->query("SELECT * FROM useraccounts WHERE username='" . $data ."'");
         if($query->num_rows()>0){
@@ -63,7 +107,7 @@ class Login_model extends CI_Model {
         }
         return false;
     }
-    
+
     public function new_fb_user($data){
         $this->db->query("INSERT INTO useraccounts(username, password) VALUES('" . strtolower($data['username']) . "', '" . $data['password'] . "')");
         $query = $this->db->query("SELECT srno FROM useraccounts WHERE username='" . $data['username'] . "'");
@@ -77,7 +121,7 @@ class Login_model extends CI_Model {
             $file = fopen($fileName, 'w+');
             fputs($file, $filedata);
             fclose($file);
-            
+
             if(!file_exists($fileName)){
                 if($data['gender']=="male"){
                     copy(FCPATH . 'assets/images/avatar_male.png' , FCPATH . 'userdata/' . $data['uid'] . '/avatar_male.png');
@@ -91,7 +135,7 @@ class Login_model extends CI_Model {
             else{
                 $data['imagepath'] = 'fb_profilepic.jpg';
             }
-            
+
             $this->db->query("INSERT INTO extendedinfo(fname, lname, email, avatarpath, uid) VALUES('" . $data['fname'] . "', '" . $data['lname'] . "', '" . $data['email'] . "', '" . $data['imagepath'] . "', " . (int)$result['srno'] . ")");
             $_query= $this->db->query("SELECT useraccounts.*, extendedinfo.* FROM useraccounts, extendedinfo WHERE useraccounts.username='" . $data['username'] . "' AND useraccounts.srno=extendedinfo.uid");
             if($_query->num_rows()>0){
