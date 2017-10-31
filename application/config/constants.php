@@ -3,6 +3,16 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /*
 |--------------------------------------------------------------------------
+| Social login URL's
+|--------------------------------------------------------------------------
+|
+*/
+define('FB_API_URL', "https://graph.facebook.com/me?fields=email,name,gender,id&access_token=");
+define('GOOGLE_API_URL', "https://www.googleapis.com/plus/v1/people/me?fields=emails,name,id,gender&access_token=");
+define('TWITTER_API_URL', "");
+
+/*
+|--------------------------------------------------------------------------
 | File and Directory Modes
 |--------------------------------------------------------------------------
 |

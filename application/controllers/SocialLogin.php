@@ -17,7 +17,7 @@ class SocialLogin extends CI_Controller {
         $json;
 
         switch($provider) {
-            case 'facebook':    $url = "https://graph.facebook.com/me?fields=email,name,gender,id&access_token=" . $accessToken;
+            case 'facebook':    $url = FB_API_URL . $accessToken;
                                 $content = file_get_contents($url);
                                 $json = json_decode($content);
                                 $json->username = explode(" ", $json->name)[0] . '_' . getToken(8);
@@ -26,7 +26,7 @@ class SocialLogin extends CI_Controller {
                                 $json->email = $json->email;
                                 $json->gender = $json->gender;
                                 break;
-            case 'google':      $url = "https://www.googleapis.com/plus/v1/people/me?fields=emails,name,id,gender&access_token=" . $accessToken;
+            case 'google':      $url = GOOGLE_API_URL . $accessToken;
                                 $content = file_get_contents($url);
                                 $json = json_decode($content);
                                 $json->username = $json->name->givenName . '_' . getToken(8);
