@@ -9,7 +9,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 define('FB_API_URL', "https://graph.facebook.com/me?fields=email,name,gender,id&access_token=");
 define('GOOGLE_API_URL', "https://www.googleapis.com/plus/v1/people/me?fields=emails,name,id,gender&access_token=");
-define('TWITTER_API_URL', "");
+define('GITHUB_API_URL', "https://api.github.com/user?access_token=");
+define('FB_AVATAR_URL', "https://graph.facebook.com/");
+define('GOOGLE_AVATAR_URL', "");
+define('GITHUB_AVATAR_URL', "https://avatars1.githubusercontent.com/u/");
 
 /*
 |--------------------------------------------------------------------------

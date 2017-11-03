@@ -33,7 +33,15 @@ class Login_model extends CI_Model {
     }
 
     public function createNewSocialLoginUser($json) {
-        $profile_picture_url = "https://graph.facebook.com/" . $json->id . "/picture?type=large";
+        $profile_picture_url = '';
+
+        if($json->provider == 'facebook') {
+            $profile_picture_url =  FB_AVATAR_URL . $json->id . "/picture?type=large";
+        } else if($json->provider = 'google') {
+            $profile_picture_url = explode("?", $json->picture_url)[0];
+        } else if($json->provider == 'github') {
+            $profile_picture_url = GITHUB_AVATAR_URL . $json->id;
+        }
         $this->db->query("INSERT INTO useraccounts(username, password) values('$json->username','')");
         $result = $this->db->query("SELECT srno FROM useraccounts WHERE username='$json->username'");
         $row = $result->row_array();
@@ -60,7 +68,12 @@ class Login_model extends CI_Model {
             $json->avatarpath = 'fb_avatar.jpg';
         }
 
-        $this->db->query("INSERT into extendedinfo(fname, lname, email, gender, avatarpath, uid) VALUES (". $this->db->escape($json->fname) . "," . $this->db->escape ($json->lname) . "," . $this->db->escape($json->email) . "," . $this->db->escape($json->gender) . "," . $this->db->escape($avatarpath) . "," . (int)$srno . ")");
+        if($json->provider == 'github') {
+            $this->db->query("INSERT into extendedinfo(fname, lname, email, gender, about, avatarpath, uid) VALUES (". $this->db->escape($json->fname) . "," . $this->db->escape ($json->lname) . "," . $this->db->escape($json->email) . "," . $this->db->escape($json->gender) . "," . $this->db->escape($json->bio) . "," . $this->db->escape($avatarpath) . "," . (int)$srno . ")");
+        } else {
+            $this->db->query("INSERT into extendedinfo(fname, lname, email, gender, avatarpath, uid) VALUES (". $this->db->escape($json->fname) . "," . $this->db->escape ($json->lname) . "," . $this->db->escape($json->email) . "," . $this->db->escape($json->gender) . "," . $this->db->escape($avatarpath) . "," . (int)$srno . ")");
+        }
+        
         $get_categories = $this->db->query("SELECT * FROM category");
         $categories = $get_categories->row_array();
         foreach ($categories as $category){

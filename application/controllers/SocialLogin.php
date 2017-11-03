@@ -12,6 +12,7 @@ class SocialLogin extends CI_Controller {
         $id = $this->security->xss_clean($this->input->get('id'));
         $accessToken = $this->security->xss_clean($this->input->get('accessToken'));
         $provider = $this->security->xss_clean($this->input->get('provider'));
+        $picture_url = $this->security->xss_clean($this->input->get('picture'));
         $url = '';
         $content = '';
         $json;
@@ -35,10 +36,27 @@ class SocialLogin extends CI_Controller {
                                 $json->email = $json->emails[0]->value;
                                 $json->gender = $json->gender;
                                 break;
-            case 'twitter':     $url = "";
+            case 'github':      $url = GITHUB_API_URL . $accessToken;
+                                $opts = [
+                                    "http" => [
+                                        "header" => "User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1521.3 Safari/537.36"
+                                    ]
+                                ];
+                                $context = stream_context_create($opts);
+                                $content = file_get_contents($url, false, $context);
+                                $json = json_decode($content);
+                                $json->username = explode(" ", $json->name)[0] . '_' . getToken(8);
+                                $json->fname = explode(" ", $json->name)[0];
+                                $json->lname = explode(" ", $json->name)[1];
+                                $json->email = $json->email;
+                                $json->gender = '';
+                                $json->bio = $json->bio;
                                 break;
         }
 
+        $json->provider = $provider;
+        $json->picture_url = $picture_url;
+        
         if ($json->email == $email) {
             $result = $this->Login_model->validateSocialLogin($email);
             if (!$result) {
