@@ -49,7 +49,7 @@ class Login_model extends CI_Model {
 
         mkdir(FCPATH . "./userdata/" . $srno, 0777, TRUE);
         $filedata = file_get_contents($profile_picture_url);
-        $fileName = FCPATH . "userdata/" . $srno . '/fb_avatar.jpg';
+        $fileName = FCPATH . "userdata/" . $srno . '/social_avatar.jpg';
         $file = fopen($fileName, 'w+');
         fputs($file, $filedata);
         fclose($file);
@@ -65,7 +65,7 @@ class Login_model extends CI_Model {
             }
         }
         else{
-            $json->avatarpath = 'fb_avatar.jpg';
+            $json->avatarpath = 'social_avatar.jpg';
         }
 
         if($json->provider == 'github') {
@@ -73,7 +73,7 @@ class Login_model extends CI_Model {
         } else {
             $this->db->query("INSERT into extendedinfo(fname, lname, email, gender, avatarpath, uid) VALUES (". $this->db->escape($json->fname) . "," . $this->db->escape ($json->lname) . "," . $this->db->escape($json->email) . "," . $this->db->escape($json->gender) . "," . $this->db->escape($avatarpath) . "," . (int)$srno . ")");
         }
-        
+
         $get_categories = $this->db->query("SELECT * FROM category");
         $categories = $get_categories->row_array();
         foreach ($categories as $category){
