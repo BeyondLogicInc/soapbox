@@ -656,7 +656,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.2.4"
+        "php": "5.6.15"
     },
     "platform-dev": []
 }
