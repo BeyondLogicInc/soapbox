@@ -3,7 +3,7 @@
 	"name" : "codeigniter/framework",
 	"license": "MIT",
 	"require": {
-		"php": "5.6.15",
+		"php": "7.3.24",
 		"cboden/ratchet": "^0.3.3"
 	},
 	"autoload": {
