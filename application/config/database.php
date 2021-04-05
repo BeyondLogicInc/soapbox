@@ -63,10 +63,10 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'us-cdbr-iron-east-03.cleardb.net',
-	'username' => 'bd9a4f534d15ef',
-	'password' => 'df2c0dfc',
-	'database' => 'heroku_e4c9b8d135f53e2',
+	'hostname' => 'localhost',
+	'username' => 'root',
+	'password' => 'michbharii',
+	'database' => 'soapbox',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
